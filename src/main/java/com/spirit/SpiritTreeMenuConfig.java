@@ -7,7 +7,7 @@ import net.runelite.client.config.ConfigItem;
 @ConfigGroup("spirittreemenu")
 public interface SpiritTreeMenuConfig extends Config
 {
-	public enum FontID
+	enum FontID
 	{
 		PLAIN("Plain", 495),
 		BOLD("Bold", 496),
@@ -36,10 +36,6 @@ public interface SpiritTreeMenuConfig extends Config
 			return this.id;
 		}
 	}
-
-
-
-
 
 	@ConfigItem(
 			keyName = "hideShortcut",
