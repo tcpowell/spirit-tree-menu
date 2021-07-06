@@ -1,2 +1,2 @@
-# Example
-An example greeter plugin
+# Spirit Tree Menu
+Updates the Spirit Tree navigation menu
