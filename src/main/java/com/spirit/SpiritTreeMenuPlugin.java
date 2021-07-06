@@ -46,20 +46,20 @@ public class SpiritTreeMenuPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
-		log.info("Spirit Tree Menu started!");
+		log.debug("Spirit Tree Menu started!");
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
-		log.info("Spirit Tree Menu stopped!");
+		log.debug("Spirit Tree Menu stopped!");
 	}
 
 	@Subscribe
 	public void onWidgetLoaded(WidgetLoaded e)
 	{
 		if (e.getGroupId() == WidgetID.ADVENTURE_LOG_ID) {
-			log.info("Adventure Log loaded!");
+			log.debug("Adventure Log loaded!");
 
 			clientThread.invokeLater(() ->
 			{
@@ -115,7 +115,7 @@ public class SpiritTreeMenuPlugin extends Plugin
 						//revalidate everything
 						childWidget.revalidate();
 
-						log.info(childWidget.getText());
+						log.debug(childWidget.getText());
 
 					}
 				}
