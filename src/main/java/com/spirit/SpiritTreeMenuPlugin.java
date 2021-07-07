@@ -18,7 +18,9 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @PluginDescriptor(
-		name = "Spirit Tree Menu"
+		name = "Spirit Tree Menu",
+		description = "Updates the Spirit Tree navigation menu",
+		tags = {"spirit", "teleport" ,"tree"}
 )
 public class SpiritTreeMenuPlugin extends Plugin
 {
@@ -44,13 +46,13 @@ public class SpiritTreeMenuPlugin extends Plugin
 	private SpiritTreeMenuConfig config;
 
 	@Override
-	protected void startUp() throws Exception
+	protected void startUp()
 	{
 		log.debug("Spirit Tree Menu started!");
 	}
 
 	@Override
-	protected void shutDown() throws Exception
+	protected void shutDown()
 	{
 		log.debug("Spirit Tree Menu stopped!");
 	}
