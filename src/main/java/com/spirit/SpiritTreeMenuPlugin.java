@@ -1,6 +1,9 @@
 package com.spirit;
 
 import com.google.inject.Provides;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
@@ -65,22 +68,32 @@ public class SpiritTreeMenuPlugin extends Plugin
 
 			clientThread.invokeLater(() ->
 			{
-				if (client.getWidget(WidgetID.ADVENTURE_LOG_ID,ADVENTURE_LOG_TITLE).getChild(1).getText().equals(MENU_TITLE)) {
+				if (Objects.requireNonNull(client.getWidget(WidgetID.ADVENTURE_LOG_ID, ADVENTURE_LOG_TITLE)).getChild(1).getText().equals(MENU_TITLE)) {
 
 					Widget adventureLogList = client.getWidget(WidgetID.ADVENTURE_LOG_ID,ADVENTURE_LOG_LIST);
+					List<Widget> treeLocations = new ArrayList<>();
 
+					for (Widget childWidget : Objects.requireNonNull(adventureLogList).getDynamicChildren()) {
+						if (config.hideUnavailable() && childWidget.getText().toLowerCase().contains(INACTIVE_COLOR)) {
+							childWidget.setHidden(true);
+						}
+						else {
+							treeLocations.add(childWidget);
+						}
+					}
 
-					int offset = 0;
+					int numItems = treeLocations.size();
 					int newWidgetWidth = adventureLogList.getOriginalWidth()/2;
-					int numEachCol = (int) Math.ceil((adventureLogList.getDynamicChildren().length-1)/2);
-					int newWidgetHeight = (int) Math.floor(adventureLogList.getOriginalHeight()/numEachCol)-1;
+					int numEachCol = (numItems - numItems%2)/2;
+					int newWidgetHeight = (adventureLogList.getOriginalHeight()/numEachCol)-1;
 
 					//loop through and resize/move
-					for (Widget childWidget : adventureLogList.getDynamicChildren()) {
+					for (int i=0; i<treeLocations.size(); i++) {
+						Widget childWidget = treeLocations.get(i);
 
 						//set position and text of new menu items (first half)
-						if (childWidget.getIndex()-offset<numEachCol) {
-							childWidget.setOriginalY(newWidgetHeight * (childWidget.getIndex()-offset));
+						if (i<numEachCol) {
+							childWidget.setOriginalY(newWidgetHeight * (i));
 							childWidget.setXTextAlignment(0);
 							childWidget.setText(updatedText(childWidget.getText(), false));
 							childWidget.setOriginalWidth(newWidgetWidth+LEFT_PIXELS);
@@ -88,24 +101,16 @@ public class SpiritTreeMenuPlugin extends Plugin
 
 						//set position and text (second half)
 						else {
-							childWidget.setOriginalY((newWidgetHeight * (childWidget.getIndex()-numEachCol-offset)) );
+							childWidget.setOriginalY((newWidgetHeight * (i-numEachCol)) );
 							childWidget.setOriginalX(newWidgetWidth+LEFT_PIXELS);
 							childWidget.setXTextAlignment(2);
 							childWidget.setText(updatedText(childWidget.getText(), true));
 							childWidget.setOriginalWidth(newWidgetWidth-LEFT_PIXELS);
 						}
 
-						//hide cancel (we have an odd number for now)
-						if (childWidget.getText().contains(CANCEL)) {
+						//hide cancel (if there are an odd number of rows)
+						if (numItems%2==1 && childWidget.getText().contains(CANCEL)) {
 							childWidget.setHidden(true);
-						}
-
-						//
-						if (config.hideUnavailable()) {
-							if (childWidget.getText().toLowerCase().contains(INACTIVE_COLOR)) {
-								childWidget.setHidden(true);
-								offset++;
-							}
 						}
 
 						//height, font, width
